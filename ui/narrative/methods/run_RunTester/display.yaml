@@ -1,0 +1,36 @@
+#
+# define display information
+#
+name: Run Tester
+
+tooltip: |
+   Used for testing purposes 
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+    apps:
+        related:
+            [app1, app2]
+        next:
+            [app3, app4]
+
+#
+# Configure the display and description of parameters
+#
+parameters :
+    depth :
+        ui-name : |
+            Depth
+        short-hint : |
+            Call depth
+        long-hint  : |
+            Depth of the call stack go.  1 means just the initial call.
+
+description : |
+    <p>This is a tester app to exercise the runner.  It serves no scientific purpose.</p>
