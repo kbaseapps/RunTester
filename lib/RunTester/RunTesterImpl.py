@@ -3,6 +3,7 @@
 import os
 import time
 from installed_clients.RunTesterClient import RunTester as RTC
+from installed_clients.specialClient import special as special
 #END_HEADER
 
 
@@ -26,6 +27,15 @@ class RunTester:
     GIT_COMMIT_HASH = ""
 
     #BEGIN_CLASS_HEADER
+    def _test_slurm(self, token):
+        print("Submitting SLURM")
+        sr = special(self.callback_url, token=token)
+        with open('./work/tmp/slurm.sl', 'w') as f:
+            f.write('#/bin/sh')
+            f.write('echo hello')
+        p = {'submit_script': 'slurm.sl'}
+        res = sr.slurm(p)
+        print('slurm'+str(res))
     #END_CLASS_HEADER
 
     # config contains contents of config file in a hash or None if it couldn't
@@ -48,11 +58,14 @@ class RunTester:
         # ctx is the context object
         # return variables are: output
         #BEGIN run_RunTester
-        depth = params['depth']
+        depth = params.get('depth', 1)
         parallel = params.get('parallel', 1)
         size = params.get('size', 0)
         print("Depth = %d" % (depth))
         depth -= 1
+        if params.get('do_slurm') == 1:
+            self._test_slurm(ctx['token'])
+
         if depth > 0:
             rtc = RTC(url=self.callback_url)
             if parallel==1:
