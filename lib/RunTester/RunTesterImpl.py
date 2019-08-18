@@ -4,6 +4,7 @@ import os
 import time
 from installed_clients.RunTesterClient import RunTester as RTC
 from installed_clients.specialClient import special as special
+from RunTester.RunTesterUtil import wdl
 #END_HEADER
 
 
@@ -65,6 +66,9 @@ class RunTester:
         depth -= 1
         if params.get('do_slurm') == 1:
             self._test_slurm(ctx['token'])
+
+        if params.get('do_wdl') == 1:
+            wdl(self.callback_url, ctx['token'])
 
         if depth > 0:
             rtc = RTC(url=self.callback_url)

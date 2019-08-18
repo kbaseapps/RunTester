@@ -66,6 +66,29 @@ class special(object):
             if job_state['finished']:
                 return job_state['result'][0]
 
+    def _wdl_submit(self, params, context=None):
+        return self._client._submit_job(
+             'special.wdl', [params],
+             self._service_ver, context)
+
+    def wdl(self, params, context=None):
+        """
+        :param params: instance of unspecified object
+        :returns: instance of type "WDLOutput" -> structure: parameter
+           "report_name" of String
+        """
+        job_id = self._wdl_submit(params, context)
+        async_job_check_time = self._client.async_job_check_time
+        while True:
+            time.sleep(async_job_check_time)
+            async_job_check_time = (async_job_check_time *
+                self._client.async_job_check_time_scale_percent / 100.0)
+            if async_job_check_time > self._client.async_job_check_max_time:
+                async_job_check_time = self._client.async_job_check_max_time
+            job_state = self._check_job(job_id)
+            if job_state['finished']:
+                return job_state['result'][0]
+
     def status(self, context=None):
         job_id = self._client._submit_job('special.status', 
             [], self._service_ver, context)
